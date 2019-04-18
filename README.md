@@ -7,7 +7,7 @@ when idle, turning it back on when the user interacts with the system.
 
 ## System Requirements
 
-The following libraries are used by `piblank` (some of these might already be
+The following libraries and utilities are used by `piblank` (some of these might already be
 installed by default):
 
 * libx11-6
