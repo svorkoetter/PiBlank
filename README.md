@@ -1,4 +1,4 @@
-# piblank - GPIO to Key Presses and Display Power Management
+# piblank - Raspberry Pi Display Power Management
 
 The `piblank` utility is a screen saver daemon for use with Raspbian, intended
 to be launched from your X11 session manager's auto-start file. It monitors X11
@@ -7,7 +7,7 @@ when idle, turning it back on when the user interacts with the system.
 
 ## System Requirements
 
-The following libraries are used by `piblank` (some of these might already be
+The following libraries and utilities are used by `piblank` (some of these might already be
 installed by default):
 
 * libx11-6
