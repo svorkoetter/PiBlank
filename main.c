@@ -59,7 +59,7 @@ int main( int argc, char **argv )
     }
 
     /* Get idle timeout value and convert to milliseconds. */
-    int timeout = 30;
+    unsigned long timeout = 30;
     if( optind < argc ) {
         if( optind != argc - 1 )
 	    usage();
@@ -81,24 +81,37 @@ int main( int argc, char **argv )
     for( ;; ) {
 	usleep(500000);
 
+	unsigned long idle = ULONG_MAX;
+
 	/* Look up user idle time in milliseconds. Based on code found at
 	   https://superuser.com/questions/638357 */
-	if( display == NULL && (display = XOpenDisplay(NULL)) == NULL )
-	    continue;
+	if( (display != NULL || (display = XOpenDisplay(NULL)) != NULL)
+	 && XScreenSaverQueryExtension(display,&event_base,&error_base) )
+	{
+	    XScreenSaverInfo info;
+	    XScreenSaverQueryInfo(display,DefaultRootWindow(display),&info);
+	    idle = info.idle;
+	}
 
-	int event_base, error_base;
-	if( !XScreenSaverQueryExtension(display,&event_base,&error_base) )
-	    continue;
-
-	XScreenSaverInfo info;
-	XScreenSaverQueryInfo(display,DefaultRootWindow(display),&info);
+	/* Check console idle time. */
+	time_t now = time(NULL);
+	for( int i = 1; i <= 6 && idle > 0; ++i ) {
+	    char tty[10];
+	    sprintf(tty,"/dev/tty%1.1d",i);
+	    struct stat st;
+	    if( stat(tty,&st) == 0 ) {
+		unsigned long ms = (now - st.st_mtime) * 1000UL;
+		if( ms < idle )
+		    idle = ms;
+	    }
+	}
 
 	/* Turn screen on or off appropriately. */
-	if( screenOn && info.idle >= timeout ) {
+	if( screenOn && idle >= timeout ) {
 	    system("vcgencmd display_power 0");
 	    screenOn = false;
 	}
-	else if( !screenOn && info.idle < timeout ) {
+	else if( !screenOn && idle < timeout ) {
 	    system("vcgencmd display_power 1");
 	    screenOn = true;
 	}
