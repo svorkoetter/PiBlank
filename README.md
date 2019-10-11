@@ -47,4 +47,4 @@ Screen blanking and unblanking is done using the `vcgencmd` utility, invoked as
 
 X11 idle time determination is done using the `XScreenSaverQueryInfo` function
 of the `libxss` library. Console idle time determination is done by monitoring
-the modification times of /dev/tty1 through /dev/tty6.
+the modification times of `/dev/tty1` through `/dev/tty6`.
