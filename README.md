@@ -2,8 +2,8 @@
 
 The `piblank` utility is a screen saver daemon for use with Raspbian, intended
 to be launched from your X11 session manager's auto-start file. It monitors X11
-user idle time (no input from the keyboard or mouse) and turns off the display
-when idle, turning it back on when the user interacts with the system.
+and console idle time (no input from the keyboard or mouse) and turns off the
+display when idle, turning it back on when the user interacts with the system.
 
 ## System Requirements
 
@@ -45,5 +45,6 @@ minutes.
 Screen blanking and unblanking is done using the `vcgencmd` utility, invoked as
 `vcgencmd display_power x`, where _x_ is 0 or 1 respectively.
 
-Idle time determination is done using the `XScreenSaverQueryInfo` function of
-the `libxss` library.
+X11 idle time determination is done using the `XScreenSaverQueryInfo` function
+of the `libxss` library. Console idle time determination is done by monitoring
+the modification times of /dev/tty1 through /dev/tty6.
